@@ -1,13 +1,33 @@
-const getPrice = (req, res) => {
+const getPrice = async (req, res) => {
   try {
-    return res.json({ success: true, data });
+    const data = await req.db
+      .collection("authorList")
+      .find({
+        "information.price": { $lt: 10 },
+      })
+      .toArray((err, results) => {
+        if (!err) {
+          return res.json({ success: true, data: results });
+        }
+        throw new Error("Failed to get data from DB");
+      });
   } catch (error) {
     console.log(`[ERROR]: Failed to get price data | ${error.message}`);
   }
 };
-const getFeaturedAuthors = (req, res) => {
+const getFeaturedAuthors = async (req, res) => {
   try {
-    return res.json({ success: true, data });
+    const data = await req.db
+      .collection("authorList")
+      .find({
+        "authors.featured": true,
+      })
+      .toArray((err, results) => {
+        if (!err) {
+          return res.json({ success: true, data: results });
+        }
+        throw new Error("Failed to get data from DB");
+      });
   } catch (error) {
     console.log(`[ERROR]: Failed to get featured authors | ${error.message}`);
   }
